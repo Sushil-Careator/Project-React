@@ -13,14 +13,18 @@ type Props = {
 } & RouteComponentProps;
 
 class ProductDetail extends React.Component<Props> {
+    productPrices: number = 1;
+    productSalePrices: number = 1;
+
     state = {
         // itemdata: {},
         productId: null,
         productImage: "",
         productName: "",
-        productPrice: null,
-        productSalePrice: null,
+        productPrice: 1,
+        productSalePrice: 1,
         productStock: null,
+        lan: "",
     };
 
     overLine = {
@@ -31,19 +35,74 @@ class ProductDetail extends React.Component<Props> {
         try {
             const params: any = this.props.match.params;
             const { data } = await ProductService.getProductById(params.id);
+
             this.setState({ productId: data.productId });
             this.setState({ productImage: data.productImage });
             this.setState({ productName: data.productName });
-            this.setState({ productPrice: data.productPrice });
-            this.setState({ productSalePrice: data.productSalePrice });
             this.setState({ productStock: data.productStock });
+            this.setState({
+                productPrice: JSON.parse(data.productPrice),
+            });
+            this.setState({
+                productSalePrice: JSON.parse(data.productSalePrice),
+            });
+
+            const currencyValue = () => {
+                if (this.props.selectedCurrency === "GBP") {
+                    this.setState({
+                        productPrice: JSON.parse(data.productPrice) / 103,
+                    });
+                    this.setState({
+                        productSalePrice:
+                            JSON.parse(data.productSalePrice) / 103,
+                    });
+                } else if (this.props.selectedCurrency === "USD") {
+                    this.setState({
+                        productPrice: JSON.parse(data.productPrice) / 73,
+                    });
+                    this.setState({
+                        productSalePrice:
+                            JSON.parse(data.productSalePrice) / 73,
+                    });
+                } else if (this.props.selectedCurrency === "CAD") {
+                    this.setState({
+                        productPrice: JSON.parse(data.productPrice) / 60,
+                    });
+                    this.setState({
+                        productSalePrice:
+                            JSON.parse(data.productSalePrice) / 60,
+                    });
+                } else if (this.props.selectedCurrency === "EUR") {
+                    this.setState({
+                        productPrice: JSON.parse(data.productPrice) / 90,
+                    });
+                    this.setState({
+                        productSalePrice:
+                            JSON.parse(data.productSalePrice) / 90,
+                    });
+                } else {
+                    this.setState({
+                        productPrice: JSON.parse(data.productPrice),
+                    });
+                    this.setState({
+                        productSalePrice: JSON.parse(data.productSalePrice),
+                    });
+                }
+            };
+
+            currencyValue();
 
             console.log("success", data);
         } catch (e) {
             console.log("error", e);
         }
     }
+
     render() {
+        // {
+        //     this.setState({ lan: this.props.selectedCurrency });
+        // }
+
         return (
             <ErrorBoundary>
                 <Row>
@@ -51,7 +110,6 @@ class ProductDetail extends React.Component<Props> {
                         <h1>Product Detail</h1>
                     </Column>
                 </Row>
-
                 <div>
                     <div>
                         <img src={this.state.productImage} alt="" />

@@ -15,6 +15,7 @@ import LoadingActions from "../store/actions/LoadingActions";
 
 import classes from "../components/Filter.module.css";
 import { Slider } from "@material-ui/core";
+import ThemeSwitch from "../components/ThemeSwitch";
 
 type Props = {
     selectedCurrency: string;
@@ -67,7 +68,6 @@ class ProductList extends React.Component<Props, State> {
 
     rangeSelector = (event: any, newValue: any) => {
         this.setState({ value: newValue });
-        // this.setState({})
     };
     render() {
         return (
