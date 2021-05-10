@@ -67,8 +67,7 @@ class ProductList extends React.Component<Props, State> {
 
     rangeSelector = (event: any, newValue: any) => {
         this.setState({ value: newValue });
-        console.log(newValue);
-        console.log(this.state.value[0], this.state.value[1]);
+        // this.setState({})
     };
     render() {
         return (
@@ -122,6 +121,7 @@ class ProductList extends React.Component<Props, State> {
                         )}
                         <Column size={12} classes={"text-center"}>
                             <Paginate
+                                itemCountPerPage={10}
                                 totalPages={this.state.totalPages}
                                 currentPage={this.state.pageNumber}
                                 changePage={this.updateData}
