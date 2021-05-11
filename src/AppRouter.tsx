@@ -30,7 +30,7 @@ const AppRouter: React.FC = (props) => {
                             path={"/productdetail/:id"}
                             component={ProductDetail}
                         />
-                        <Route path={"/cart"} component={Cart} />
+                        <PrivateRoute path={"/cart"} component={Cart} />
                         <Route path={"/register"} component={Register} />
 
                         {/* 404 Route */}

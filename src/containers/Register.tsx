@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 // import { useHistory } from "react-router";
-import { BrowserRouter, NavLink, useHistory } from "react-router-dom";
+import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
 
 type RegisterState = {
@@ -9,6 +9,7 @@ type RegisterState = {
     name: any;
     password: any;
     conformpassword: any;
+    redirect: boolean;
 };
 class Register extends React.Component {
     state: RegisterState = {
@@ -16,6 +17,7 @@ class Register extends React.Component {
         name: "",
         password: "",
         conformpassword: "",
+        redirect: false,
     };
 
     submitting = (e: any) => {
@@ -28,12 +30,16 @@ class Register extends React.Component {
                 password: this.state.password,
             };
             axios.post("http://localhost:5000/auth/register", user).then(
-                (response) =>
-                    // this.setState({ user: response.data.id })
-                    // alert("Login Success")
-                    console.log(response)
+                (response) => console.log(response.status === 201)
                 // history.state("/login")
             );
+            this.setState({ redirect: true });
+        }
+    };
+
+    redirecting = () => {
+        if (this.state.redirect) {
+            return <Redirect to="/login" />;
         }
     };
 
@@ -44,6 +50,7 @@ class Register extends React.Component {
     render() {
         return (
             <div className="container register-form">
+                {this.redirecting()}
                 <div className="form">
                     <div className="note">
                         <p>Register</p>
@@ -102,9 +109,7 @@ class Register extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <NavLink to="/login">
-                                <button className="btnSubmit">Submit</button>
-                            </NavLink>
+                            <button className="btnSubmit">Submit</button>
                         </form>
                     </div>
                 </div>
