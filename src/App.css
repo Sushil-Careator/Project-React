@@ -53,3 +53,13 @@
     background: #0062cc;
     color: #fff;
 }
+
+.table {
+    position: relative;
+}
+
+.totalProductPrice {
+    position: absolute;
+    right: 12%;
+    font-size: 20px;
+}

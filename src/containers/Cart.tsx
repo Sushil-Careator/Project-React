@@ -1,7 +1,9 @@
+import axios from "axios";
 import React from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
+import StorageService from "../services/StorageService";
 import { CartType } from "../types";
 
 type Props = {
@@ -11,6 +13,7 @@ type State = {};
 
 class Cart extends React.Component<Props, State> {
     state = { change: false };
+
     render() {
         const allId: any = [];
         let allData: any = [];
@@ -45,6 +48,24 @@ class Cart extends React.Component<Props, State> {
             this.setState({ change: true });
         };
 
+        const processSubmit = (e: any) => {
+            e.preventDefault();
+
+            const orderData = allData.filter(
+                (data: any) => data.productQty >= 1
+            );
+
+            const dataPass = {
+                products: JSON.stringify(orderData),
+            };
+
+            return StorageService.getData("token").then((token) =>
+                axios.post("http://localhost:5000/order", dataPass, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+            );
+        };
+        let allTotalAmount: number = 0;
         return (
             <Column size={12}>
                 <div className="container">
@@ -89,15 +110,29 @@ class Cart extends React.Component<Props, State> {
                                             INR{" "}
                                             {data.productSalePrice *
                                                 data.productQty}
+                                            <p style={{ display: "none" }}>
+                                                {
+                                                    (allTotalAmount =
+                                                        allTotalAmount +
+                                                        data.productSalePrice *
+                                                            data.productQty)
+                                                }
+                                            </p>
                                         </td>
                                     </tr>
                                 ) : null
                             )}
                         </tbody>
                     </table>
+                    <p className={"totalProductPrice"}>
+                        Total Product Price <b>INR {allTotalAmount}</b>
+                    </p>
                 </div>
                 <div className="container">
-                    <button className="btn btn-primary p-3">
+                    <button
+                        className="btn btn-primary p-3"
+                        onClick={processSubmit}
+                    >
                         Proceed to Checkout
                     </button>
                 </div>
