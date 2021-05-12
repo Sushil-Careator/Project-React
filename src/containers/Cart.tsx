@@ -57,6 +57,7 @@ class Cart extends React.Component<Props, State> {
 
             const dataPass = {
                 products: JSON.stringify(orderData),
+                totalAmount: allTotalAmount,
             };
 
             return StorageService.getData("token").then((token) =>

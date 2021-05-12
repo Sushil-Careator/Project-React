@@ -4,6 +4,7 @@ import Container from "./components/Container";
 import ErrorPage from "./components/ErrorPage";
 import PrivateRoute from "./components/PrivateRoute";
 import Cart from "./containers/Cart";
+import Checkout from "./containers/Checkout";
 import Login from "./containers/Login";
 import ProductDetail from "./containers/ProductDetail";
 import ProductList from "./containers/ProductList";
@@ -32,6 +33,7 @@ const AppRouter: React.FC = (props) => {
                         />
                         <PrivateRoute path={"/cart"} component={Cart} />
                         <Route path={"/register"} component={Register} />
+                        <Route path={"/checkout"} component={Checkout} />
 
                         {/* 404 Route */}
                         <Route component={ErrorPage} />
