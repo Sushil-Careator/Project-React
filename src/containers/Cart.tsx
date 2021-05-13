@@ -5,6 +5,7 @@ import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import StorageService from "../services/StorageService";
 import { CartType } from "../types";
+import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
 
 type Props = {
     cartData: any;
@@ -12,7 +13,7 @@ type Props = {
 type State = {};
 
 class Cart extends React.Component<Props, State> {
-    state = { change: false };
+    state = { change: false, reRender: false };
 
     render() {
         const allId: any = [];
@@ -61,15 +62,28 @@ class Cart extends React.Component<Props, State> {
             };
 
             return StorageService.getData("token").then((token) =>
-                axios.post("http://localhost:5000/order", dataPass, {
-                    headers: { Authorization: `Bearer ${token}` },
-                })
+                axios
+                    .post("http://localhost:5000/order", dataPass, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                    .then((res) =>
+                        res.status === 201
+                            ? this.setState({ reRender: true })
+                            : this.setState({ reRender: false })
+                    )
             );
         };
+        const redirecting = () => {
+            if (this.state.reRender === true) {
+                return <Redirect to="/checkout" />;
+            }
+        };
+
         let allTotalAmount: number = 0;
         return (
             <Column size={12}>
                 <div className="container">
+                    {redirecting()}
                     <h1 className="text-primary">Cart Details</h1>
                     <table className="table">
                         <thead>

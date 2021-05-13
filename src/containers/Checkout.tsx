@@ -1,7 +1,13 @@
 import React, { RefObject, SyntheticEvent } from "react";
+import { connect } from "react-redux";
+import { CartType } from "../types";
+import { Redirect, RouteComponentProps } from "react-router";
+import axios from "axios";
+import StorageService from "../services/StorageService";
 
-type Props = {};
+type Props = { cartData: any } & RouteComponentProps;
 type State = {
+    paymentMethod: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -19,10 +25,12 @@ type State = {
     country1: string;
     state1: string;
     zip1: number;
+    reRender: boolean;
 };
 class Checkout extends React.Component<Props, State> {
     emailRef: RefObject<HTMLInputElement>;
     state: State = {
+        paymentMethod: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -40,13 +48,14 @@ class Checkout extends React.Component<Props, State> {
         country1: "",
         state1: "",
         zip1: 0,
+        reRender: false,
     };
     constructor(props: any) {
         super(props);
         this.emailRef = React.createRef<HTMLInputElement>();
     }
 
-    validate = () => {};
+    totalPrice = 0;
 
     blur = (e: any) => {
         if (e.target.value === "") {
@@ -86,7 +95,39 @@ class Checkout extends React.Component<Props, State> {
         let emailValid = this.emailValidate();
         let mobileValid = this.mobileValidate();
         if (emailValid === true && mobileValid === true) {
-            alert("form Submited");
+            // alert("form Submited");
+
+            let paymentDataPass = {
+                amountPaid: this.totalPrice,
+                paymentMethod: this.state.paymentMethod,
+            };
+            let dataPass = {
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                mobileNo: JSON.parse(this.state.mobile),
+                line1: this.state.address,
+                line2: this.state.address2,
+                city: this.state.country,
+                state: this.state.state,
+                pincode: this.state.zip,
+            };
+
+            StorageService.getData("token").then((token) =>
+                axios.post("http://localhost:5000/payment", paymentDataPass, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+            );
+            return StorageService.getData("token").then((token) =>
+                axios
+                    .post("http://localhost:5000/address", dataPass, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                    .then((res) =>
+                        res.status === 201
+                            ? this.setState({ reRender: true })
+                            : this.setState({ reRender: false })
+                    )
+            );
         } else {
             alert("Invalid Form");
         }
@@ -114,11 +155,51 @@ class Checkout extends React.Component<Props, State> {
         }
     };
 
+    redirecting = () => {
+        if (this.state.reRender === true) {
+            return <Redirect to="/" />;
+        }
+    };
+
     render() {
+        this.totalPrice = 0;
         return (
             <>
                 <h1 id="heading1">Checkout Page</h1>
+                {this.redirecting()}
                 <div className="container">
+                    <div className="mb-3">Payment</div>
+                    <div className="col-md-5 mb-3">
+                        <label>
+                            Payment Method{" "}
+                            <select
+                                className="custom-select d-block w-100"
+                                id="paymentMethod"
+                                name="paymentMethod"
+                                value={this.state.paymentMethod}
+                                required
+                                onChange={(e: any) => {
+                                    this.setState({
+                                        paymentMethod: e.target.value,
+                                    });
+                                    console.log(e.target.value);
+                                }}
+                                onBlur={this.blur}
+                            >
+                                <option value="">Choose...</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Debit Card">Debit cards</option>
+                                <option value="Credit cards">
+                                    Credit Card
+                                </option>
+                                <option value="Mobile Payment">
+                                    Mobile Payment
+                                </option>
+                                <option value="Net Banking">Net Banking</option>
+                            </select>
+                        </label>
+                    </div>
+
                     <div className="row">
                         <div className="col-md-8 order-md-1">
                             <h4 className="mb-3">Billing address</h4>
@@ -262,7 +343,7 @@ class Checkout extends React.Component<Props, State> {
                                 <div className="row">
                                     <div className="col-md-5 mb-3">
                                         <label>
-                                            Country{" "}
+                                            City{" "}
                                             <select
                                                 className="custom-select d-block w-100"
                                                 id="country"
@@ -279,20 +360,20 @@ class Checkout extends React.Component<Props, State> {
                                                 <option value="">
                                                     Choose...
                                                 </option>
-                                                <option value="india">
-                                                    India
+                                                <option value="bangalore">
+                                                    Bangalore
                                                 </option>
-                                                <option value="UnitedStates">
-                                                    United States
+                                                <option value="Mumbai">
+                                                    Mumbai
                                                 </option>
-                                                <option value="russia">
-                                                    Russia
+                                                <option value="delhi">
+                                                    Delhi
                                                 </option>
-                                                <option value="nepal">
-                                                    Nepal
+                                                <option value="kolkata">
+                                                    Kolkata
                                                 </option>
-                                                <option value="sriLanka">
-                                                    Sri Lanka
+                                                <option value="indor">
+                                                    Indor
                                                 </option>
                                             </select>
                                         </label>
@@ -501,20 +582,20 @@ class Checkout extends React.Component<Props, State> {
                                                 <option value="">
                                                     Choose...
                                                 </option>
-                                                <option value="india">
-                                                    India
+                                                <option value="bangalore">
+                                                    Bangalore
                                                 </option>
-                                                <option value="UnitedStates">
-                                                    United States
+                                                <option value="Mumbai">
+                                                    Mumbai
                                                 </option>
-                                                <option value="russia">
-                                                    Russia
+                                                <option value="delhi">
+                                                    Delhi
                                                 </option>
-                                                <option value="nepal">
-                                                    Nepal
+                                                <option value="kolkata">
+                                                    Kolkata
                                                 </option>
-                                                <option value="sriLanka">
-                                                    Sri Lanka
+                                                <option value="indor">
+                                                    Indor
                                                 </option>
                                             </select>
                                         </label>
@@ -588,66 +669,38 @@ class Checkout extends React.Component<Props, State> {
                                         </span>
                                     </h4>
                                     <ul className="list-group mb-3">
-                                        <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                            <div>
-                                                <h6 className="my-0">
-                                                    Product name
-                                                </h6>
-                                                <small className="text-muted">
-                                                    Brief description
-                                                </small>
-                                            </div>
-                                            <span className="text-muted">
-                                                Rs 1000
-                                            </span>
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                            <div>
-                                                <h6 className="my-0">
-                                                    Second product
-                                                </h6>
-                                                <small className="text-muted">
-                                                    Brief description
-                                                </small>
-                                            </div>
-                                            <span className="text-muted">
-                                                Rs 500
-                                            </span>
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                            <div>
-                                                <h6 className="my-0">
-                                                    Third item
-                                                </h6>
-                                                <small className="text-muted">
-                                                    Brief description
-                                                </small>
-                                            </div>
-                                            <span className="text-muted">
-                                                Rs 700
-                                            </span>
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between bg-light">
-                                            <div className="text-success">
-                                                <h6 className="my-0">
-                                                    Promo code
-                                                </h6>
-                                                <small>EXAMPLECODE</small>
-                                            </div>
-                                            <span className="text-success">
-                                                Rs -200
-                                            </span>
-                                        </li>
+                                        {this.props.cartData.cart.map((data) =>
+                                            data.productQty > 0 ? (
+                                                <li className="list-group-item d-flex justify-content-between lh-condensed">
+                                                    <div>
+                                                        <h6 className="my-0">
+                                                            {data.productName}
+                                                        </h6>
+                                                    </div>
+                                                    <span className="text-muted">
+                                                        Qty {data.productQty}
+                                                    </span>
+                                                    <span className="text-muted">
+                                                        INR{" "}
+                                                        {data.productSalePrice *
+                                                            data.productQty}
+                                                    </span>
+                                                </li>
+                                            ) : null
+                                        )}
+
                                         <li className="list-group-item d-flex justify-content-between">
-                                            <span>Total (Rupee)</span>
-                                            <strong>Rs 2000</strong>
+                                            <span>Total (INR)</span>
+                                            <strong>
+                                                INR {this.totalPrice}
+                                            </strong>
                                         </li>
                                     </ul>
                                 </div>
                                 <button
                                     className="btn btn-primary btn-lg btn-block"
                                     id="btn"
-                                    onSubmit={this.formSubmitting}
+                                    // onSubmit={this.formSubmitting}
                                 >
                                     Continue to checkout
                                 </button>
@@ -661,45 +714,37 @@ class Checkout extends React.Component<Props, State> {
                                 </span>
                             </h4>
                             <ul className="list-group mb-3">
-                                <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                    <div>
-                                        <h6 className="my-0">Product name</h6>
-                                        <small className="text-muted">
-                                            Brief description
-                                        </small>
-                                    </div>
-                                    <span className="text-muted">Rs 1000</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                    <div>
-                                        <h6 className="my-0">Second product</h6>
-                                        <small className="text-muted">
-                                            Brief description
-                                        </small>
-                                    </div>
-                                    <span className="text-muted">Rs 500</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                    <div>
-                                        <h6 className="my-0">Third item</h6>
-                                        <small className="text-muted">
-                                            Brief description
-                                        </small>
-                                    </div>
-                                    <span className="text-muted">Rs 700</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between bg-light">
-                                    <div className="text-success">
-                                        <h6 className="my-0">Promo code</h6>
-                                        <small>EXAMPLECODE</small>
-                                    </div>
-                                    <span className="text-success">
-                                        Rs -200
-                                    </span>
-                                </li>
+                                {this.props.cartData.cart.map((data) =>
+                                    data.productQty > 0 ? (
+                                        <li className="list-group-item d-flex justify-content-between lh-condensed">
+                                            <div>
+                                                <h6 className="my-0">
+                                                    {data.productName}
+                                                </h6>
+                                            </div>
+                                            <span className="text-muted">
+                                                Qty {data.productQty}
+                                            </span>
+                                            <span className="text-muted">
+                                                INR{" "}
+                                                {data.productSalePrice *
+                                                    data.productQty}
+                                            </span>
+                                            <span style={{ display: "none" }}>
+                                                {
+                                                    (this.totalPrice =
+                                                        this.totalPrice +
+                                                        data.productSalePrice *
+                                                            data.productQty)
+                                                }
+                                            </span>
+                                        </li>
+                                    ) : null
+                                )}
+
                                 <li className="list-group-item d-flex justify-content-between">
-                                    <span>Total (Rupee)</span>
-                                    <strong>Rs 2000</strong>
+                                    <span>Total (INR)</span>
+                                    <strong>INR {this.totalPrice}</strong>
                                 </li>
                             </ul>
                         </div>
@@ -709,4 +754,11 @@ class Checkout extends React.Component<Props, State> {
         );
     }
 }
-export default Checkout;
+
+const mapStoreToProps = (store: CartType) => {
+    return {
+        cartData: store,
+    };
+};
+
+export default connect(mapStoreToProps, null)(Checkout);
