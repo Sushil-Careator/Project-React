@@ -13,8 +13,6 @@ import LoadingWrapper from "../components/LoadingWrapper";
 import LoadingActions from "../store/actions/LoadingActions";
 import classes from "../components/Filter.module.css";
 import { Slider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import ThemeSwitch from "../components/ThemeSwitch";
 
 type Props = {
     selectedCurrency: string;
@@ -26,6 +24,7 @@ type State = {
     plist: ProductType[];
     totalPages: number;
     pageNumber: number;
+    itemPerPage: number;
     value: any;
 };
 class ProductList extends React.Component<Props, State> {
@@ -33,6 +32,7 @@ class ProductList extends React.Component<Props, State> {
         plist: [],
         totalPages: 0,
         pageNumber: 1,
+        itemPerPage: 20,
         value: [0, 100000],
     };
     componentDidMount() {
@@ -43,7 +43,8 @@ class ProductList extends React.Component<Props, State> {
         try {
             this.props.showLoader();
             const { data } = await ProductService.getProducts(
-                this.state.pageNumber
+                this.state.pageNumber,
+                this.state.itemPerPage
             );
             this.setState({
                 plist: data.data,
@@ -65,6 +66,7 @@ class ProductList extends React.Component<Props, State> {
 
     rangeSelector = (event: any, newValue: any) => {
         this.setState({ value: newValue });
+        this.setState({ itemPerPage: 1000 });
     };
 
     render() {
