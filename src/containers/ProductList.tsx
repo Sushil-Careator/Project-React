@@ -11,10 +11,9 @@ import CartActions from "../store/actions/CartActions";
 import Paginate from "../components/Paginate";
 import LoadingWrapper from "../components/LoadingWrapper";
 import LoadingActions from "../store/actions/LoadingActions";
-// import { Filter } from "../components/filter";
-
 import classes from "../components/Filter.module.css";
 import { Slider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import ThemeSwitch from "../components/ThemeSwitch";
 
 type Props = {
@@ -22,8 +21,6 @@ type Props = {
     showLoader: () => void;
     hideLoader: () => void;
     addItem: (product: ProductType) => void;
-    // changeRanges: () => void;
-    // changeRanges: () => void;
 } & RouteComponentProps;
 type State = {
     plist: ProductType[];
@@ -69,6 +66,7 @@ class ProductList extends React.Component<Props, State> {
     rangeSelector = (event: any, newValue: any) => {
         this.setState({ value: newValue });
     };
+
     render() {
         return (
             <>
@@ -79,9 +77,9 @@ class ProductList extends React.Component<Props, State> {
                         onChange={this.rangeSelector}
                         valueLabelDisplay="auto"
                     />
-                    <p>
+                    <h5 className="text-primary">
                         {this.state.value[0]}-{this.state.value[1]}
-                    </p>
+                    </h5>
                     <select
                         name="sort"
                         id="sort"
@@ -94,7 +92,6 @@ class ProductList extends React.Component<Props, State> {
                         <option value="Name High-Low">Name High-Low</option>
                     </select>
                 </div>
-                {/* <Filter changeRanges={() => this.changeRange} /> */}
                 <LoadingWrapper>
                     <Row>
                         {this.state.plist.map((val) =>
