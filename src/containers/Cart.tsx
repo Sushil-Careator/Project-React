@@ -57,7 +57,7 @@ class Cart extends React.Component<Props, State> {
             );
 
             const dataPass = {
-                products: JSON.stringify(orderData),
+                products: orderData,
                 totalAmount: allTotalAmount,
             };
 

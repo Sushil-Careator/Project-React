@@ -19,24 +19,42 @@ type Props = {
     showLoader: () => void;
     hideLoader: () => void;
     addItem: (product: ProductType) => void;
+    selecterSearch: string;
 } & RouteComponentProps;
 type State = {
     plist: ProductType[];
     totalPages: number;
     pageNumber: number;
-    itemPerPage: number;
     value: any;
+    searchData: string;
+    sortName: string;
+    sortPrice: string;
 };
-class ProductList extends React.Component<Props, State> {
+class ProductList extends React.PureComponent<Props, State> {
     state: State = {
         plist: [],
         totalPages: 0,
         pageNumber: 1,
-        itemPerPage: 20,
         value: [0, 100000],
+        searchData: "",
+        sortName: "productId",
+        sortPrice: "ASC",
     };
     componentDidMount() {
         this.getData();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        // this.getData();
+        if (this.props.selecterSearch !== prevProps.selecterSearch) {
+            this.getData();
+        }
+        if (
+            this.state.sortName !== prevState.sortName ||
+            this.state.sortPrice !== prevState.sortPrice
+        ) {
+            this.getData();
+        }
     }
 
     async getData() {
@@ -44,7 +62,11 @@ class ProductList extends React.Component<Props, State> {
             this.props.showLoader();
             const { data } = await ProductService.getProducts(
                 this.state.pageNumber,
-                this.state.itemPerPage
+                this.state.value[0],
+                this.state.value[1],
+                this.props.selecterSearch,
+                this.state.sortName,
+                this.state.sortPrice
             );
             this.setState({
                 plist: data.data,
@@ -66,10 +88,38 @@ class ProductList extends React.Component<Props, State> {
 
     rangeSelector = (event: any, newValue: any) => {
         this.setState({ value: newValue });
-        this.setState({ itemPerPage: 1000 });
+        this.getData();
+    };
+
+    changeRedux = () => {
+        this.getData();
+    };
+
+    sort = (e: any) => {
+        console.log(e.target.value);
+        if (e.target.value === "PriceLowHigh") {
+            this.setState({ sortName: "productSalePrice" });
+            this.setState({ sortPrice: "ASC" });
+        } else if (e.target.value === "PriceHighLow") {
+            this.setState({ sortName: "productSalePrice" });
+            this.setState({ sortPrice: "DESC" });
+        } else if (e.target.value === "NameLowHigh") {
+            this.setState({ sortName: "productName" });
+            this.setState({ sortPrice: "ASC" });
+        } else if (e.target.value === "NameHighLow") {
+            this.setState({ sortName: "productName" });
+            this.setState({ sortPrice: "DESC" });
+        } else {
+            this.setState({ sortName: "productId" });
+            this.setState({ sortPrice: "nodata" });
+        }
     };
 
     render() {
+        console.log(this.props.selecterSearch);
+        // this.getData();
+        this.setState({ searchData: this.props.selecterSearch });
+
         return (
             <>
                 <div className={classes.slidermain}>
@@ -82,16 +132,12 @@ class ProductList extends React.Component<Props, State> {
                     <h5 className="text-primary">
                         {this.state.value[0]}-{this.state.value[1]}
                     </h5>
-                    <select
-                        name="sort"
-                        id="sort"
-                        onChange={(e) => console.log(e.target.value)}
-                    >
-                        <option value="">-SORT-</option>
-                        <option value="Price Low-High">Price Low-High</option>
-                        <option value="Price High-Low">Price High-Low</option>
-                        <option value="Name Low-High">Name Low-High</option>
-                        <option value="Name High-Low">Name High-Low</option>
+                    <select name="sort" id="sort" onChange={this.sort}>
+                        <option value="">-- SORT --</option>
+                        <option value="PriceLowHigh">Price Low-High</option>
+                        <option value="PriceHighLow">Price High-Low</option>
+                        <option value="NameLowHigh">Name Low-High</option>
+                        <option value="NameHighLow">Name High-Low</option>
                     </select>
                 </div>
                 <LoadingWrapper>
@@ -137,6 +183,7 @@ class ProductList extends React.Component<Props, State> {
 const mapStoreToProps = (store: StoreType) => {
     return {
         selectedCurrency: store.currency, // undefined => INR => USD
+        selecterSearch: store.search,
     };
 };
 const mapDispatchToProps = (dispatch: Dispatch) => {

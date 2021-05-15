@@ -27,6 +27,10 @@ class Profile extends React.Component<Props, State> {
         changed: false,
     };
     async componentDidMount() {
+        this.getData();
+    }
+
+    getData = async () => {
         try {
             const { data } = await UserService.profile();
             console.log(data.address);
@@ -34,7 +38,7 @@ class Profile extends React.Component<Props, State> {
         } catch (e) {
             console.log(e.response.data);
         }
-    }
+    };
 
     addAddress = (e: any) => {
         e.preventDefault();
@@ -52,30 +56,26 @@ class Profile extends React.Component<Props, State> {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then(() => {
-                    this.setState({ changed: true });
-                    // this.props.history.push("/profile");
+                    this.getData();
                 })
         );
     };
 
     delete = (e: any) => {
         let deleteId = e.target.value;
-
         return StorageService.getData("token").then((token) =>
             axios
-                .delete(` http://localhost:5000/address/${deleteId}`, {
+                .delete(`http://localhost:5000/address/${deleteId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then(() => {
-                    this.setState({ changed: true });
-                    // this.forceUpdate();
+                    this.getData();
                 })
         );
     };
 
     redirecting = () => {
         if (this.state.changed === true) {
-            this.setState({ changed: false });
             return <Redirect to="/profile" />;
         }
     };
@@ -100,10 +100,15 @@ class Profile extends React.Component<Props, State> {
                                 key={data.id}
                             >
                                 <h5>
-                                    <p>
-                                        NAME: {data.firstName} {data.lastName}
-                                    </p>
-                                    <p>Mobile No: {data.mobileNo}</p>
+                                    {data.firstName == "" ? (
+                                        <p>
+                                            NAME: {data.firstName}{" "}
+                                            {data.lastName}
+                                        </p>
+                                    ) : null}
+                                    {data.mobileNo == "" ? (
+                                        <p>Mobile No: {data.mobileNo}</p>
+                                    ) : null}
                                     ADDRESS: {data.line1}
                                     {data.line2} , {data.city}, {data.state} ,
                                     {data.pincode}
