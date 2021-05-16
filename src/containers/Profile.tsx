@@ -14,6 +14,7 @@ type State = {
     state: string;
     pincode: number;
     changed: boolean;
+    productsFromApi: any;
 };
 
 class Profile extends React.Component<Props, State> {
@@ -25,6 +26,7 @@ class Profile extends React.Component<Props, State> {
         state: "",
         pincode: 0,
         changed: false,
+        productsFromApi: [],
     };
     async componentDidMount() {
         this.getData();
@@ -34,6 +36,19 @@ class Profile extends React.Component<Props, State> {
         try {
             const { data } = await UserService.profile();
             console.log(data.address);
+            console.log(data.order);
+
+            data.order.map((data: any, index: number) => {
+                this.setState({
+                    productsFromApi: [
+                        ...this.state.productsFromApi,
+                        JSON.parse(data.products),
+                    ],
+                });
+            });
+
+            // this.state.productsFromApi.map((data) => console.log(data));
+            console.log(this.state.productsFromApi);
             this.setState({ orderAddress: data.address });
         } catch (e) {
             console.log(e.response.data);
@@ -196,6 +211,20 @@ class Profile extends React.Component<Props, State> {
                         </form>
                     </Column>
                 </Row>
+                <div className="col-md-12">
+                    {this.state.productsFromApi.map((data: any) => (
+                        <Row>
+                            <div className="bg-primary p-3">
+                                {data.map((data) => (
+                                    <div className="bg-success">
+                                        {data.productName}
+                                    </div>
+                                ))}
+                                <button>Cancle</button>
+                            </div>
+                        </Row>
+                    ))}
+                </div>
             </>
         );
     }

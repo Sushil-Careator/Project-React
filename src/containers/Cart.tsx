@@ -4,11 +4,14 @@ import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import StorageService from "../services/StorageService";
-import { CartType } from "../types";
+import { CartType, ProductType } from "../types";
 import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
+import { Dispatch } from "redux";
+import CartActions from "../store/actions/CartActions";
 
 type Props = {
     cartData: any;
+    removeItem: any;
 } & RouteComponentProps;
 type State = {};
 
@@ -33,7 +36,9 @@ class Cart extends React.Component<Props, State> {
                         JSON.parse(e.target.value) ===
                         JSON.parse(data.productId)
                     ) {
-                        data.productQty = JSON.parse(data.productQty) - 1;
+                        if (data.productQty >= 2) {
+                            data.productQty = JSON.parse(data.productQty) - 1;
+                        }
                     }
                 }
             );
@@ -57,7 +62,7 @@ class Cart extends React.Component<Props, State> {
             );
 
             const dataPass = {
-                products: orderData,
+                products: JSON.stringify(orderData),
                 totalAmount: allTotalAmount,
             };
 
@@ -79,6 +84,13 @@ class Cart extends React.Component<Props, State> {
             }
         };
 
+        const removeItem = (e: any) => {
+            console.log(e.target.value);
+            let itemId = parseInt(e.target.value);
+            console.log(itemId);
+            this.props.removeItem(itemId);
+        };
+
         let allTotalAmount: number = 0;
         return (
             <Column size={12}>
@@ -97,46 +109,52 @@ class Cart extends React.Component<Props, State> {
                             </tr>
                         </thead>
                         <tbody>
-                            {allData.map((data: any, index: number) =>
-                                data.productQty > 0 ? (
-                                    <tr key={data.productId}>
-                                        <th scope="row">{index + 1}</th>
-                                        <td>{data.productId}</td>
-                                        <td>{data.productName}</td>
-                                        <td>INR {data.productSalePrice}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn-danger m-2"
-                                                onClick={decQut}
-                                                value={data.productId}
-                                            >
-                                                -
-                                            </button>
-                                            {data.productQty}
-                                            <button
-                                                className="btn btn-primary m-2"
-                                                onClick={incQut}
-                                                value={data.productId}
-                                            >
-                                                +
-                                            </button>
-                                        </td>
-                                        <td>
-                                            INR{" "}
-                                            {data.productSalePrice *
-                                                data.productQty}
-                                            <p style={{ display: "none" }}>
-                                                {
-                                                    (allTotalAmount =
-                                                        allTotalAmount +
-                                                        data.productSalePrice *
-                                                            data.productQty)
-                                                }
-                                            </p>
-                                        </td>
-                                    </tr>
-                                ) : null
-                            )}
+                            {allData.map((data: any, index: number) => (
+                                <tr key={data.productId}>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{data.productId}</td>
+                                    <td>{data.productName}</td>
+                                    <td>INR {data.productSalePrice}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-danger m-2"
+                                            onClick={decQut}
+                                            value={data.productId}
+                                        >
+                                            -
+                                        </button>
+                                        {data.productQty}
+                                        <button
+                                            className="btn btn-primary m-2"
+                                            onClick={incQut}
+                                            value={data.productId}
+                                        >
+                                            +
+                                        </button>
+                                    </td>
+                                    <td>
+                                        INR{" "}
+                                        {data.productSalePrice *
+                                            data.productQty}
+                                        <p style={{ display: "none" }}>
+                                            {
+                                                (allTotalAmount =
+                                                    allTotalAmount +
+                                                    data.productSalePrice *
+                                                        data.productQty)
+                                            }
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <button
+                                            value={data.productId}
+                                            onClick={removeItem}
+                                        >
+                                            Cancle Order
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                     <p className={"totalProductPrice"}>
@@ -162,4 +180,11 @@ const mapStoreToProps = (store: CartType) => {
     };
 };
 
-export default connect(mapStoreToProps, null)(Cart);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        removeItem: (itemId: number) =>
+            dispatch(CartActions.removeItem(itemId)),
+    };
+};
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Cart);
