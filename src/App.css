@@ -67,11 +67,12 @@
 #country,
 #country1,
 #state1,
-#state {
+#state,
+#paymentMethod {
     padding: 0.375rem 1.75rem 0.375rem 0.75rem;
     color: #495057;
     border: 1px solid #ced4da;
-    border-radius: 0.25rem;
+    border-radius: 5rem;
 }
 
 #heading1 {
@@ -134,6 +135,35 @@
     position: absolute;
     top: 5px;
     right: 5px;
+}
+
+.imageDivThum {
+    width: 100px;
+}
+
+.flexDisplay {
+    display: flex;
+    flex-basis: auto;
+}
+
+th,
+td {
+    padding: 10px 5px;
+    text-transform: capitalize;
+}
+
+.form-control,
+#paymentMethod,
+#country,
+#country1,
+#state1,
+#state {
+    margin: 5px;
+}
+
+#profileImage {
+    width: 200px;
+    width: auto;
 }
 
 @media only screen and (max-width: 2000px) {

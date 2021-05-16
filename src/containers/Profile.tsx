@@ -15,6 +15,12 @@ type State = {
     pincode: number;
     changed: boolean;
     productsFromApi: any;
+    orderDate: any;
+    shippingDate: any;
+    orderIds: any;
+    userProfileImage: string;
+    userName: string;
+    userEmail: string;
 };
 
 class Profile extends React.Component<Props, State> {
@@ -27,16 +33,32 @@ class Profile extends React.Component<Props, State> {
         pincode: 0,
         changed: false,
         productsFromApi: [],
+        orderIds: [],
+        orderDate: [],
+        shippingDate: [],
+        userProfileImage: "",
+        userName: "",
+        userEmail: "",
     };
+
+    ordersData = [];
+
     async componentDidMount() {
         this.getData();
     }
 
     getData = async () => {
+        this.setState({ productsFromApi: [] });
+        this.setState({ orderIds: [] });
+        this.setState({ orderDate: [] });
+        this.setState({ shippingDate: [] });
+
         try {
             const { data } = await UserService.profile();
             console.log(data.address);
             console.log(data.order);
+            this.setState({ userName: data.userName.toUpperCase() });
+            this.setState({ userEmail: data.userEmail });
 
             data.order.map((data: any, index: number) => {
                 this.setState({
@@ -45,10 +67,38 @@ class Profile extends React.Component<Props, State> {
                         JSON.parse(data.products),
                     ],
                 });
+
+                // this.ordersData.push()
+
+                if (data.isCancelled == false) {
+                    this.setState({
+                        orderIds: [
+                            ...this.state.orderIds,
+                            JSON.parse(data.orderId),
+                        ],
+                    });
+                } else {
+                    this.setState({
+                        orderIds: [...this.state.orderIds, 0],
+                    });
+                }
+
+                this.setState({
+                    orderDate: [...this.state.orderDate, data.orderDate],
+                });
+
+                this.setState({
+                    shippingDate: [
+                        ...this.state.shippingDate,
+                        data.shippingDate,
+                    ],
+                });
             });
 
             // this.state.productsFromApi.map((data) => console.log(data));
             console.log(this.state.productsFromApi);
+            console.log(this.state.orderIds);
+
             this.setState({ orderAddress: data.address });
         } catch (e) {
             console.log(e.response.data);
@@ -95,51 +145,169 @@ class Profile extends React.Component<Props, State> {
         }
     };
 
+    cancelOrder = (e: any) => {
+        let cancelId = parseInt(e.target.value);
+        console.log(cancelId);
+
+        let dataPass = {
+            isCancelled: true,
+        };
+
+        return StorageService.getData("token").then((token) =>
+            axios
+                .patch(`http://localhost:5000/order/${cancelId}`, dataPass, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+                .then(() => {
+                    this.getData();
+                })
+        );
+    };
+
     render() {
         return (
             <>
                 {this.redirecting()}
                 <Row>
                     <h2 className="text-primary mb-4">Profile Details</h2>
-                    <Column size={4}>
-                        <div className="container user">
-                            <h3>UserName</h3>
-                            <h4>User Email</h4>
+                    <Column size={12}>
+                        <div className="container user text-center">
+                            <div className="profileImage" id="profileImage">
+                                <img
+                                    src=""
+                                    alt="Profile Image"
+                                    className="img-thumbnail"
+                                />
+                            </div>
+                            <h3>{this.state.userName}</h3>
+                            <h4>{this.state.userEmail}</h4>
                         </div>
                     </Column>
-                    <Column size={8}>
-                        {this.state.orderAddress.map((data: any) => (
-                            <div
-                                className="container order"
-                                id={data.id}
-                                key={data.id}
-                            >
-                                <h5>
-                                    {data.firstName == "" ? (
-                                        <p>
-                                            NAME: {data.firstName}{" "}
-                                            {data.lastName}
-                                        </p>
-                                    ) : null}
-                                    {data.mobileNo == "" ? (
-                                        <p>Mobile No: {data.mobileNo}</p>
-                                    ) : null}
-                                    ADDRESS: {data.line1}
-                                    {data.line2} , {data.city}, {data.state} ,
-                                    {data.pincode}
-                                </h5>
-                                <button onClick={this.delete} value={data.id}>
-                                    DELETE
-                                </button>
-                            </div>
-                        ))}
+
+                    <div className="col-md-12 text-center">
+                        {this.state.productsFromApi.map(
+                            (data: any, index: number) => (
+                                <Row>
+                                    <div className="bg-primary p-3">
+                                        <h3>Order {index + 1}</h3>
+                                        <h4>
+                                            Order Date :{" "}
+                                            {new Date(
+                                                this.state.orderDate[index]
+                                            ).toLocaleString()}
+                                        </h4>
+                                        {data.map((data) => (
+                                            <>
+                                                <tr
+                                                    className={
+                                                        this.state.orderIds[
+                                                            index
+                                                        ] == 0
+                                                            ? "bg-warning flexDisplay"
+                                                            : "bg-success flexDisplay"
+                                                    }
+                                                >
+                                                    <td className="imageDivThum p-2 flex-auto flexDisplay">
+                                                        <img
+                                                            className="img-thumbnail"
+                                                            src={
+                                                                data.productImage
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="full-width col-4">
+                                                        <p>
+                                                            {" "}
+                                                            <b>Product Name</b>
+                                                        </p>
+                                                        {data.productName}
+                                                    </td>
+                                                    <td className="full-width col-2">
+                                                        <p>
+                                                            <b>Price Per Qty</b>
+                                                        </p>
+                                                        {data.productSalePrice}
+                                                    </td>
+                                                    <td className="full-width col-2">
+                                                        <p>
+                                                            <b>
+                                                                Product Quantity
+                                                            </b>
+                                                        </p>
+                                                        {data.productQty}
+                                                    </td>
+                                                    <td className="full-width col-2">
+                                                        <p>
+                                                            <b>Total Amount</b>
+                                                        </p>
+                                                        {data.productSalePrice *
+                                                            data.productQty}
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        ))}
+                                        {this.state.orderIds[index] == 0 ? (
+                                            <p className="bg-danger p-md-3">
+                                                Order Cancelled
+                                            </p>
+                                        ) : (
+                                            <button
+                                                value={
+                                                    this.state.orderIds[index]
+                                                }
+                                                onClick={this.cancelOrder}
+                                                className="btn btn-danger"
+                                            >
+                                                Cancel Order
+                                            </button>
+                                        )}
+                                    </div>
+                                </Row>
+                            )
+                        )}
+                    </div>
+
+                    <Column size={12}>
+                        <h1 className="pt-5">Address</h1>
+                        <div className="bg-light-gray text-center">
+                            {this.state.orderAddress.map((data: any) => (
+                                <div
+                                    className="container order bg-gray m-5 p-3 text-capitalize"
+                                    id={data.id}
+                                    key={data.id}
+                                >
+                                    <h5>
+                                        {data.firstName !== null ? (
+                                            <p>
+                                                NAME: {data.firstName}{" "}
+                                                {data.lastName}
+                                            </p>
+                                        ) : null}
+                                        {data.mobileNo !== null ? (
+                                            <p>Mobile No: {data.mobileNo}</p>
+                                        ) : null}
+                                        ADDRESS: {data.line1}
+                                        {data.line2} , {data.city}, {data.state}{" "}
+                                        ,{data.pincode}
+                                    </h5>
+                                    <button
+                                        onClick={this.delete}
+                                        value={data.id}
+                                        className="btn btn-danger"
+                                    >
+                                        DELETE
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                     </Column>
                 </Row>
                 <Row>
-                    <Column size={4}></Column>
+                    <Column size={2}></Column>
                     <Column size={8}>
                         <form onSubmit={this.addAddress}>
                             <div className="mb-3">
+                                Address 1
                                 <input
                                     type="text"
                                     className="form-control"
@@ -153,6 +321,7 @@ class Profile extends React.Component<Props, State> {
                             </div>
 
                             <div className="mb-3">
+                                Address 2(Optional)
                                 <input
                                     type="text"
                                     className="form-control"
@@ -166,6 +335,7 @@ class Profile extends React.Component<Props, State> {
                             </div>
 
                             <div className="mb-3">
+                                City
                                 <input
                                     type="text"
                                     className="form-control"
@@ -179,6 +349,7 @@ class Profile extends React.Component<Props, State> {
                             </div>
 
                             <div className="mb-3">
+                                State
                                 <input
                                     type="text"
                                     className="form-control"
@@ -192,6 +363,7 @@ class Profile extends React.Component<Props, State> {
                             </div>
 
                             <div className="mb-3">
+                                PinCode
                                 <input
                                     type="text"
                                     className="form-control"
@@ -210,21 +382,8 @@ class Profile extends React.Component<Props, State> {
                             </button>
                         </form>
                     </Column>
+                    <Column size={2}></Column>
                 </Row>
-                <div className="col-md-12">
-                    {this.state.productsFromApi.map((data: any) => (
-                        <Row>
-                            <div className="bg-primary p-3">
-                                {data.map((data) => (
-                                    <div className="bg-success">
-                                        {data.productName}
-                                    </div>
-                                ))}
-                                <button>Cancle</button>
-                            </div>
-                        </Row>
-                    ))}
-                </div>
             </>
         );
     }

@@ -168,7 +168,7 @@ class Checkout extends React.Component<Props, State> {
                 <h1 id="heading1">Checkout Page</h1>
                 {this.redirecting()}
                 <div className="container">
-                    <div className="mb-3">Payment</div>
+                    <h3 className="mb-3">Payment</h3>
                     <div className="col-md-5 mb-3">
                         <label>
                             Payment Method{" "}
@@ -202,7 +202,7 @@ class Checkout extends React.Component<Props, State> {
 
                     <div className="row">
                         <div className="col-md-8 order-md-1">
-                            <h4 className="mb-3">Billing address</h4>
+                            <h3 className="mb-3">Billing address</h3>
                             <form
                                 className="needs-validation"
                                 id="form2"
@@ -450,7 +450,7 @@ class Checkout extends React.Component<Props, State> {
                                     </label>
                                 </div>
                                 <hr className="mb-4" />
-                                <h4 className="mb-3">Shopping address</h4>
+                                <h3 className="mb-3">Shopping address</h3>
                                 <div className="row">
                                     <div className="col-md-6 mb-3">
                                         <label>

@@ -97,66 +97,79 @@ class Cart extends React.Component<Props, State> {
                 <div className="container">
                     {redirecting()}
                     <h1 className="text-primary">Cart Details</h1>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">product Id</th>
-                                <th scope="col">Product Name</th>
-                                <th scope="col">Product Price</th>
-                                <th scope="col">Product Quantity</th>
-                                <th scope="col">Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {allData.map((data: any, index: number) => (
-                                <tr key={data.productId}>
-                                    <th scope="row">{index + 1}</th>
-                                    <td>{data.productId}</td>
-                                    <td>{data.productName}</td>
-                                    <td>INR {data.productSalePrice}</td>
-                                    <td>
-                                        <button
-                                            className="btn btn-danger m-2"
-                                            onClick={decQut}
-                                            value={data.productId}
-                                        >
-                                            -
-                                        </button>
-                                        {data.productQty}
-                                        <button
-                                            className="btn btn-primary m-2"
-                                            onClick={incQut}
-                                            value={data.productId}
-                                        >
-                                            +
-                                        </button>
-                                    </td>
-                                    <td>
-                                        INR{" "}
-                                        {data.productSalePrice *
-                                            data.productQty}
-                                        <p style={{ display: "none" }}>
-                                            {
-                                                (allTotalAmount =
-                                                    allTotalAmount +
-                                                    data.productSalePrice *
-                                                        data.productQty)
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <button
-                                            value={data.productId}
-                                            onClick={removeItem}
-                                        >
-                                            Cancle Order
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {/* <table className="table">
+                        <thead> */}
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">product Image</th>
+                        <th scope="col" className="col-4">
+                            Product Name
+                        </th>
+                        <th scope="col" className="col-2">
+                            Product Price
+                        </th>
+                        <th scope="col" className="col-2">
+                            Product Quantity
+                        </th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                    {/* </thead>
+                        <tbody> */}
+                    {allData.map((data: any, index: number) => (
+                        <tr key={data.productId}>
+                            <th scope="row">{index + 1}</th>
+                            <td>
+                                <div className="imageDivThum">
+                                    <img
+                                        className="img-thumbnail"
+                                        src={data.productImage}
+                                        alt={data.productName}
+                                    />
+                                </div>
+                            </td>
+                            <td>{data.productName}</td>
+                            <td>INR {data.productSalePrice}</td>
+                            <td>
+                                <button
+                                    className="btn btn-danger m-2"
+                                    onClick={decQut}
+                                    value={data.productId}
+                                >
+                                    -
+                                </button>
+                                {data.productQty}
+                                <button
+                                    className="btn btn-primary m-2"
+                                    onClick={incQut}
+                                    value={data.productId}
+                                >
+                                    +
+                                </button>
+                            </td>
+                            <td>
+                                INR {data.productSalePrice * data.productQty}
+                                <p style={{ display: "none" }}>
+                                    {
+                                        (allTotalAmount =
+                                            allTotalAmount +
+                                            data.productSalePrice *
+                                                data.productQty)
+                                    }
+                                </p>
+                            </td>
+                            <td>
+                                <button
+                                    value={data.productId}
+                                    className="btn-outline-danger btn"
+                                    onClick={removeItem}
+                                >
+                                    Remove Item
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    {/* </tbody>
+                    </table> */}
                     <p className={"totalProductPrice"}>
                         Total Product Price <b>INR {allTotalAmount}</b>
                     </p>
