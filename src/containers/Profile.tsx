@@ -2,10 +2,11 @@ import axios from "axios";
 import React from "react";
 import { Redirect, Route, RouteComponentProps } from "react-router";
 import Column from "../components/Column";
+import ProfileUpload from "../components/ProfileUpload";
 import Row from "../components/Row";
 import StorageService from "../services/StorageService";
 import UserService from "../services/UserService";
-type Props = {} & RouteComponentProps;
+type Props = { uploadClick: () => void } & RouteComponentProps;
 type State = {
     orderAddress: any;
     line1: string;
@@ -21,8 +22,9 @@ type State = {
     userProfileImage: string;
     userName: string;
     userEmail: string;
+    hide: boolean;
 };
-
+// type uploadFile = () => void;
 class Profile extends React.Component<Props, State> {
     state: State = {
         orderAddress: [],
@@ -39,6 +41,7 @@ class Profile extends React.Component<Props, State> {
         userProfileImage: "",
         userName: "",
         userEmail: "",
+        hide: true,
     };
 
     ordersData = [];
@@ -164,6 +167,17 @@ class Profile extends React.Component<Props, State> {
         );
     };
 
+    iconClicked = () => {
+        this.setState({
+            hide: false,
+        });
+    };
+
+    // uploadFile = (e: any) => {
+    //     alert("Clicked");
+    //     alert(e.file);
+    // };
+
     render() {
         return (
             <>
@@ -178,6 +192,12 @@ class Profile extends React.Component<Props, State> {
                                     alt="Profile Image"
                                     className="img-thumbnail"
                                 />
+
+                                <i
+                                    className="fas fa-upload"
+                                    onClick={this.iconClicked}
+                                ></i>
+                                {this.state.hide ? null : <ProfileUpload />}
                             </div>
                             <h3>{this.state.userName}</h3>
                             <h4>{this.state.userEmail}</h4>
@@ -315,7 +335,9 @@ class Profile extends React.Component<Props, State> {
                                     value={this.state.line1}
                                     placeholder="line1"
                                     onChange={(e: any) =>
-                                        this.setState({ line1: e.target.value })
+                                        this.setState({
+                                            line1: e.target.value,
+                                        })
                                     }
                                 ></input>
                             </div>
@@ -329,7 +351,9 @@ class Profile extends React.Component<Props, State> {
                                     value={this.state.line2}
                                     placeholder="line2"
                                     onChange={(e: any) =>
-                                        this.setState({ line2: e.target.value })
+                                        this.setState({
+                                            line2: e.target.value,
+                                        })
                                     }
                                 ></input>
                             </div>
@@ -343,7 +367,9 @@ class Profile extends React.Component<Props, State> {
                                     value={this.state.city}
                                     placeholder="city"
                                     onChange={(e: any) =>
-                                        this.setState({ city: e.target.value })
+                                        this.setState({
+                                            city: e.target.value,
+                                        })
                                     }
                                 ></input>
                             </div>
@@ -357,7 +383,9 @@ class Profile extends React.Component<Props, State> {
                                     value={this.state.state}
                                     placeholder="state"
                                     onChange={(e: any) =>
-                                        this.setState({ state: e.target.value })
+                                        this.setState({
+                                            state: e.target.value,
+                                        })
                                     }
                                 ></input>
                             </div>
