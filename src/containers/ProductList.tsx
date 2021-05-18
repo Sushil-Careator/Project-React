@@ -35,7 +35,7 @@ class ProductList extends React.PureComponent<Props, State> {
         plist: [],
         totalPages: 0,
         pageNumber: 1,
-        value: [0, 100000],
+        value: [0, 50000],
         searchData: "",
         sortName: "productId",
         sortPrice: "ASC",
@@ -117,14 +117,13 @@ class ProductList extends React.PureComponent<Props, State> {
 
     render() {
         console.log(this.props.selecterSearch);
-        // this.getData();
         this.setState({ searchData: this.props.selecterSearch });
 
         return (
             <>
                 <div className={classes.slidermain}>
                     <Slider
-                        max={100000}
+                        max={50000}
                         value={this.state.value}
                         onChange={this.rangeSelector}
                         valueLabelDisplay="auto"

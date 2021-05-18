@@ -23,6 +23,7 @@ type State = {
     userName: string;
     userEmail: string;
     hide: boolean;
+    profileImage: any;
 };
 // type uploadFile = () => void;
 class Profile extends React.Component<Props, State> {
@@ -42,6 +43,7 @@ class Profile extends React.Component<Props, State> {
         userName: "",
         userEmail: "",
         hide: true,
+        profileImage: "",
     };
 
     ordersData = [];
@@ -55,13 +57,18 @@ class Profile extends React.Component<Props, State> {
         this.setState({ orderIds: [] });
         this.setState({ orderDate: [] });
         this.setState({ shippingDate: [] });
+        this.setState({
+            hide: true,
+        });
 
         try {
             const { data } = await UserService.profile();
             console.log(data.address);
             console.log(data.order);
+            console.log(data.profileImage);
             this.setState({ userName: data.userName.toUpperCase() });
             this.setState({ userEmail: data.userEmail });
+            this.setState({ userProfileImage: data.profileImage });
 
             data.order.map((data: any, index: number) => {
                 this.setState({
@@ -106,6 +113,22 @@ class Profile extends React.Component<Props, State> {
         } catch (e) {
             console.log(e.response.data);
         }
+
+        axios
+            .get(
+                `http://localhost:5000/auth/profileImage/${this.state.userProfileImage}`
+            )
+            .then(
+                (response) => (
+                    console.log(response.status === 200, "getting"),
+                    // history.state("/login")
+                    console.log(response),
+                    this.setState({
+                        profileImage: response.request.responseURL,
+                    }),
+                    console.log(this.state.profileImage)
+                )
+            );
     };
 
     addAddress = (e: any) => {
@@ -188,16 +211,19 @@ class Profile extends React.Component<Props, State> {
                         <div className="container user text-center">
                             <div className="profileImage" id="profileImage">
                                 <img
-                                    src=""
+                                    src={this.state.profileImage}
                                     alt="Profile Image"
                                     className="img-thumbnail"
+                                    width="200px"
                                 />
 
                                 <i
                                     className="fas fa-upload"
                                     onClick={this.iconClicked}
                                 ></i>
-                                {this.state.hide ? null : <ProfileUpload />}
+                                {this.state.hide ? null : (
+                                    <ProfileUpload getData={this.getData} />
+                                )}
                             </div>
                             <h3>{this.state.userName}</h3>
                             <h4>{this.state.userEmail}</h4>

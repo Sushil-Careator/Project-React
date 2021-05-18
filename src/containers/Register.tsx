@@ -3,6 +3,7 @@ import React from "react";
 // import { useHistory } from "react-router";
 import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
 import Login from "./Login";
+import emailjs from "emailjs-com";
 
 type RegisterState = {
     email: any;
@@ -30,9 +31,27 @@ class Register extends React.Component {
                 password: this.state.password,
             };
             axios.post("http://localhost:5000/auth/register", user).then(
-                (response) => console.log(response.status === 201)
-                // history.state("/login")
+                (response) => (
+                    console.log(response.status === 201),
+                    // history.state("/login")
+                    emailjs
+                        .sendForm(
+                            "service_n14vx2z",
+                            "template_a3a3nmo",
+                            e.target,
+                            "user_c1nAXTW57ERMZF3uDl4g2"
+                        )
+                        .then(
+                            (result) => {
+                                console.log(result.text);
+                            },
+                            (error) => {
+                                console.log(error.text);
+                            }
+                        )
+                )
             );
+
             this.setState({ redirect: true });
         }
     };

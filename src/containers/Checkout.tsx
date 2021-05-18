@@ -4,8 +4,10 @@ import { CartType } from "../types";
 import { Redirect, RouteComponentProps } from "react-router";
 import axios from "axios";
 import StorageService from "../services/StorageService";
+import { Dispatch } from "redux";
+import CartActions from "../store/actions/CartActions";
 
-type Props = { cartData: any } & RouteComponentProps;
+type Props = { cartData: any; reset: any } & RouteComponentProps;
 type State = {
     paymentMethod: string;
     firstName: string;
@@ -124,7 +126,8 @@ class Checkout extends React.Component<Props, State> {
                     })
                     .then((res) =>
                         res.status === 201
-                            ? this.setState({ reRender: true })
+                            ? (this.setState({ reRender: true }),
+                              this.props.reset())
                             : this.setState({ reRender: false })
                     )
             );
@@ -761,4 +764,10 @@ const mapStoreToProps = (store: CartType) => {
     };
 };
 
-export default connect(mapStoreToProps, null)(Checkout);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        reset: () => dispatch(CartActions.reset()),
+    };
+};
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Checkout);
