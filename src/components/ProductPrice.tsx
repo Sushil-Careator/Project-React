@@ -1,5 +1,3 @@
-import axios from "axios";
-import React, { useState } from "react";
 import formatter from "../utils/formatter";
 
 type Props = {
@@ -9,27 +7,6 @@ type Props = {
 };
 
 const ProductPrice: React.FC<Props> = ({ price, salePrice, code }) => {
-    // const [finalPrice, setFinalPrice] = useState(price) as any;
-
-    // let final = JSON.parse(finalPrice);
-
-    // const access_key: string = "c2a261cbbb657d1d2850d279d5784ac6";
-
-    // const url: string =
-    //     "http://api.exchangeratesapi.io/v1/latest?access_key=c2a261cbbb657d1d2850d279d5784ac6&format=1";
-
-    // async const getPriceCountry = () => {
-    //     await return axios
-    //         .get(url)
-    //         .then((data) =>
-    //             code === "EUR"
-    //                 ? console.log(setFinalPrice(final * data.data.rates.EUR))
-    //                 : null
-    //         );
-    // };
-
-    // getPriceCountry();
-
     return (
         <div className="d-flex align-items-center justify-content-center my-2">
             <span>{formatter.price(salePrice, code)}</span>

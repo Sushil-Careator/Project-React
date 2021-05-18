@@ -150,6 +150,15 @@ th,
 td {
     padding: 10px 5px;
     text-transform: capitalize;
+    color: #0e596e;
+}
+
+label {
+    color: #0e596e;
+}
+
+.nightColor {
+    color: #0e596e;
 }
 
 .form-control,

@@ -1,8 +1,7 @@
 import axios from "axios";
 import React from "react";
-// import { useHistory } from "react-router";
-import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
-import Login from "./Login";
+import { Redirect } from "react-router-dom";
+
 import emailjs from "emailjs-com";
 
 type RegisterState = {

@@ -14,7 +14,10 @@ const LoginButtons: React.FC = (props) => {
     if (auth) {
         return (
             <>
-                <Link className="btn btn-link" to={"/profile"}>
+                <Link
+                    className="btn btn-sm btn-outline-primary mx-2"
+                    to={"/profile"}
+                >
                     Profile
                 </Link>
                 <button

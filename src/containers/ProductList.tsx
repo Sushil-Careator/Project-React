@@ -44,7 +44,7 @@ class ProductList extends React.PureComponent<Props, State> {
         this.getData();
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps: any, prevState: any) {
         // this.getData();
         if (this.props.selecterSearch !== prevProps.selecterSearch) {
             this.getData();
@@ -96,7 +96,6 @@ class ProductList extends React.PureComponent<Props, State> {
     };
 
     sort = (e: any) => {
-        console.log(e.target.value);
         if (e.target.value === "PriceLowHigh") {
             this.setState({ sortName: "productSalePrice" });
             this.setState({ sortPrice: "ASC" });
@@ -116,7 +115,6 @@ class ProductList extends React.PureComponent<Props, State> {
     };
 
     render() {
-        console.log(this.props.selecterSearch);
         this.setState({ searchData: this.props.selecterSearch });
 
         return (
@@ -159,7 +157,6 @@ class ProductList extends React.PureComponent<Props, State> {
                                             this.props.selectedCurrency
                                         }
                                     />
-                                    {console.log(val.productPrice)}
                                 </Column>
                             ) : null
                         )}

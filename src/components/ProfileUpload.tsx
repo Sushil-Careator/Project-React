@@ -6,9 +6,9 @@ type Props = {
 };
 
 const ProfileUpload: React.FC<Props> = (props) => {
-    let file;
+    let file: any;
 
-    const changeFile = (e) => {
+    const changeFile = (e: any) => {
         file = e.target.files[0];
     };
 
@@ -24,7 +24,7 @@ const ProfileUpload: React.FC<Props> = (props) => {
                     .post(`http://localhost:5000/auth/upload`, formData, {
                         headers: { Authorization: `Bearer ${token}` },
                     })
-                    .then((res) => props.getData())
+                    .then(() => props.getData())
             );
         } else {
             alert("Select Image");

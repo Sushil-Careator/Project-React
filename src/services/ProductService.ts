@@ -4,11 +4,11 @@ import { ProductResponseType, ProductType } from "../types";
 
 const getProducts = (
     page = 1,
-    minPrice,
-    maxPrice,
-    searchData,
-    sortName,
-    sortPrice
+    minPrice: any,
+    maxPrice: any,
+    searchData: any,
+    sortName: any,
+    sortPrice: any
 ) => {
     const url = `${constants.BASE_URL}/product?page=${page}&minPrice=${minPrice}&maxPrice=${maxPrice}&searchData=${searchData}&sortName=${sortName}&sortPrice=${sortPrice}`;
     return axios.get<ProductResponseType>(url);

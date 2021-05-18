@@ -1,5 +1,4 @@
-import { render } from "@testing-library/react";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import SearchAction from "../store/actions/SearchAction";

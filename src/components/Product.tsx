@@ -34,12 +34,6 @@ class Product extends React.Component<ProductProps> {
         );
     }
 
-    // url: string =
-    //     "http://api.exchangeratesapi.io/v1/latest?access_key=c2a261cbbb657d1d2850d279d5784ac6&format=1";
-    // getPriceCountry = () => {
-    //     return axios.get(this.url).then((data) => console.log(data.data.rates));
-    // };
-
     render() {
         const { pdata, wishlist, currencyCode } = this.props;
 

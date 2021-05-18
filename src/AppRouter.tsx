@@ -9,12 +9,11 @@ import Login from "./containers/Login";
 import ProductDetail from "./containers/ProductDetail";
 import ProductList from "./containers/ProductList";
 import Register from "./containers/Register";
-// import Profile from "./containers/Profile";
 import Demo from "./Demo";
 
 const LazyProfile = React.lazy(() => import("./containers/Profile"));
 
-const AppRouter: React.FC = (props) => {
+const AppRouter: React.FC = () => {
     return (
         <main>
             <Container fluid>

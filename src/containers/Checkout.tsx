@@ -1,4 +1,4 @@
-import React, { RefObject, SyntheticEvent } from "react";
+import React, { RefObject } from "react";
 import { connect } from "react-redux";
 import { CartType } from "../types";
 import { Redirect, RouteComponentProps } from "react-router";
@@ -171,7 +171,7 @@ class Checkout extends React.Component<Props, State> {
                 <h1 id="heading1">Checkout Page</h1>
                 {this.redirecting()}
                 <div className="container">
-                    <h3 className="mb-3">Payment</h3>
+                    <h3 className="mb-3 nightColor">Payment</h3>
                     <div className="col-md-5 mb-3">
                         <label>
                             Payment Method{" "}
@@ -185,7 +185,6 @@ class Checkout extends React.Component<Props, State> {
                                     this.setState({
                                         paymentMethod: e.target.value,
                                     });
-                                    console.log(e.target.value);
                                 }}
                                 onBlur={this.blur}
                             >
@@ -205,7 +204,7 @@ class Checkout extends React.Component<Props, State> {
 
                     <div className="row">
                         <div className="col-md-8 order-md-1">
-                            <h3 className="mb-3">Billing address</h3>
+                            <h3 className="mb-3 nightColor">Billing address</h3>
                             <form
                                 className="needs-validation"
                                 id="form2"
@@ -453,7 +452,9 @@ class Checkout extends React.Component<Props, State> {
                                     </label>
                                 </div>
                                 <hr className="mb-4" />
-                                <h3 className="mb-3">Shopping address</h3>
+                                <h3 className="mb-3 nightColor">
+                                    Shopping address
+                                </h3>
                                 <div className="row">
                                     <div className="col-md-6 mb-3">
                                         <label>
@@ -667,29 +668,33 @@ class Checkout extends React.Component<Props, State> {
                                         <span className="text-muted">
                                             Your cart
                                         </span>
-                                        <span className="badge badge-secondary badge-pill">
-                                            3
-                                        </span>
                                     </h4>
                                     <ul className="list-group mb-3">
-                                        {this.props.cartData.cart.map((data) =>
-                                            data.productQty > 0 ? (
-                                                <li className="list-group-item d-flex justify-content-between lh-condensed">
-                                                    <div>
-                                                        <h6 className="my-0">
-                                                            {data.productName}
-                                                        </h6>
-                                                    </div>
-                                                    <span className="text-muted">
-                                                        Qty {data.productQty}
-                                                    </span>
-                                                    <span className="text-muted">
-                                                        INR{" "}
-                                                        {data.productSalePrice *
-                                                            data.productQty}
-                                                    </span>
-                                                </li>
-                                            ) : null
+                                        {this.props.cartData.cart.map(
+                                            (data: any) =>
+                                                data.productQty > 0 ? (
+                                                    <li
+                                                        className="list-group-item d-flex justify-content-between lh-condensed"
+                                                        key={data.productId}
+                                                    >
+                                                        <div>
+                                                            <h6 className="my-0">
+                                                                {
+                                                                    data.productName
+                                                                }
+                                                            </h6>
+                                                        </div>
+                                                        <span className="text-muted">
+                                                            Qty{" "}
+                                                            {data.productQty}
+                                                        </span>
+                                                        <span className="text-muted">
+                                                            INR{" "}
+                                                            {data.productSalePrice *
+                                                                data.productQty}
+                                                        </span>
+                                                    </li>
+                                                ) : null
                                         )}
 
                                         <li className="list-group-item d-flex justify-content-between">
@@ -712,14 +717,14 @@ class Checkout extends React.Component<Props, State> {
                         <div className="col-md-4 order-md-2 mb-4 after_order">
                             <h4 className="d-flex justify-content-between align-items-center mb-3">
                                 <span className="text-muted">Your cart</span>
-                                <span className="badge badge-secondary badge-pill">
-                                    3
-                                </span>
                             </h4>
                             <ul className="list-group mb-3">
-                                {this.props.cartData.cart.map((data) =>
+                                {this.props.cartData.cart.map((data: any) =>
                                     data.productQty > 0 ? (
-                                        <li className="list-group-item d-flex justify-content-between lh-condensed">
+                                        <li
+                                            className="list-group-item d-flex justify-content-between lh-condensed"
+                                            key={data.productId}
+                                        >
                                             <div>
                                                 <h6 className="my-0">
                                                     {data.productName}

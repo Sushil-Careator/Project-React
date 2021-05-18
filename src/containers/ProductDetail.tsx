@@ -1,9 +1,8 @@
 import React from "react";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import ErrorBoundary from "../components/ErrorBoundary";
-import ImageWithFallback from "../components/ImageWithFallback";
 import Row from "../components/Row";
 import ProductService from "../services/ProductService";
 import { StoreType } from "../types";
@@ -99,10 +98,6 @@ class ProductDetail extends React.Component<Props> {
     }
 
     render() {
-        // {
-        //     this.setState({ lan: this.props.selectedCurrency });
-        // }
-
         return (
             <ErrorBoundary>
                 <Row>

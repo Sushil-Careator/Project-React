@@ -81,7 +81,14 @@ class Login extends React.Component<LoginProps, LoginState> {
                             >
                                 Login
                             </button>
-                            <NavLink to={"/register"}>Register</NavLink>
+                            <NavLink
+                                className={
+                                    "btn btn-success w-100 text-uppercase mt-3"
+                                }
+                                to={"/register"}
+                            >
+                                Register
+                            </NavLink>
                         </form>
                     </Column>
                 </Row>

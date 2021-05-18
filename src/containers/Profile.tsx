@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { Redirect, Route, RouteComponentProps } from "react-router";
+import { Redirect, RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import ProfileUpload from "../components/ProfileUpload";
 import Row from "../components/Row";
@@ -63,14 +63,11 @@ class Profile extends React.Component<Props, State> {
 
         try {
             const { data } = await UserService.profile();
-            console.log(data.address);
-            console.log(data.order);
-            console.log(data.profileImage);
             this.setState({ userName: data.userName.toUpperCase() });
             this.setState({ userEmail: data.userEmail });
             this.setState({ userProfileImage: data.profileImage });
 
-            data.order.map((data: any, index: number) => {
+            data.order.map((data: any) => {
                 this.setState({
                     productsFromApi: [
                         ...this.state.productsFromApi,
@@ -105,10 +102,6 @@ class Profile extends React.Component<Props, State> {
                 });
             });
 
-            // this.state.productsFromApi.map((data) => console.log(data));
-            console.log(this.state.productsFromApi);
-            console.log(this.state.orderIds);
-
             this.setState({ orderAddress: data.address });
         } catch (e) {
             console.log(e.response.data);
@@ -118,16 +111,10 @@ class Profile extends React.Component<Props, State> {
             .get(
                 `http://localhost:5000/auth/profileImage/${this.state.userProfileImage}`
             )
-            .then(
-                (response) => (
-                    console.log(response.status === 200, "getting"),
-                    // history.state("/login")
-                    console.log(response),
-                    this.setState({
-                        profileImage: response.request.responseURL,
-                    }),
-                    console.log(this.state.profileImage)
-                )
+            .then((response) =>
+                this.setState({
+                    profileImage: response.request.responseURL,
+                })
             );
     };
 
@@ -196,11 +183,6 @@ class Profile extends React.Component<Props, State> {
         });
     };
 
-    // uploadFile = (e: any) => {
-    //     alert("Clicked");
-    //     alert(e.file);
-    // };
-
     render() {
         return (
             <>
@@ -242,7 +224,7 @@ class Profile extends React.Component<Props, State> {
                                                 this.state.orderDate[index]
                                             ).toLocaleString()}
                                         </h4>
-                                        {data.map((data) => (
+                                        {data.map((data: any) => (
                                             <>
                                                 <tr
                                                     className={
@@ -332,9 +314,9 @@ class Profile extends React.Component<Props, State> {
                                         {data.mobileNo !== null ? (
                                             <p>Mobile No: {data.mobileNo}</p>
                                         ) : null}
-                                        ADDRESS: {data.line1}
-                                        {data.line2} , {data.city}, {data.state}{" "}
-                                        ,{data.pincode}
+                                        ADDRESS: {data.line1} {data.line2} ,{" "}
+                                        {data.city}, {data.state} ,
+                                        {data.pincode}
                                     </h5>
                                     <button
                                         onClick={this.delete}

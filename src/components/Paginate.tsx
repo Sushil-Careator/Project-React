@@ -6,12 +6,7 @@ type Props = {
     changePage: (pageno: number) => void;
     itemCountPerPage: number;
 };
-const Paginate: React.FC<Props> = ({
-    totalPages,
-    currentPage,
-    changePage,
-    itemCountPerPage,
-}) => {
+const Paginate: React.FC<Props> = ({ totalPages, changePage }) => {
     const [selected, setSelected] = useState(0);
     const pages = Array(totalPages).fill(0);
     console.log(pages);
