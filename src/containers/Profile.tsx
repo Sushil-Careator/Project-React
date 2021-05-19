@@ -196,7 +196,7 @@ class Profile extends React.Component<Props, State> {
                                     src={this.state.profileImage}
                                     alt="Profile Image"
                                     className="img-thumbnail"
-                                    width="200px"
+                                    width="250px"
                                 />
 
                                 <i

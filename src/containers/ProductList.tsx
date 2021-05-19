@@ -119,17 +119,23 @@ class ProductList extends React.PureComponent<Props, State> {
 
         return (
             <>
-                <div className={classes.slidermain}>
+                <div className="w-25 bg-info p-3">
                     <Slider
                         max={50000}
                         value={this.state.value}
                         onChange={this.rangeSelector}
                         valueLabelDisplay="auto"
                     />
-                    <h5 className="text-primary">
-                        {this.state.value[0]}-{this.state.value[1]}
+                    <h5 className="text-black">
+                        PriceRange from {this.state.value[0]} to{" "}
+                        {this.state.value[1]}
                     </h5>
-                    <select name="sort" id="sort" onChange={this.sort}>
+                    <select
+                        name="sort"
+                        id="sort"
+                        onChange={this.sort}
+                        className=""
+                    >
                         <option value="">-- SORT --</option>
                         <option value="PriceLowHigh">Price Low-High</option>
                         <option value="PriceHighLow">Price High-Low</option>
