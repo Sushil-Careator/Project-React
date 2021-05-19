@@ -105,11 +105,11 @@ class ProductDetail extends React.Component<Props> {
                         <h1>Product Detail</h1>
                     </Column>
                 </Row>
-                <div>
+                <div className="detailPageContainer">
                     <div>
                         <img src={this.state.productImage} alt="" />
                     </div>
-                    <div>
+                    <div className="p-5 alert-secondary w-100">
                         <h1>{this.state.productName.toLocaleUpperCase()}</h1>
                         {this.state.productPrice !==
                         this.state.productSalePrice ? (
