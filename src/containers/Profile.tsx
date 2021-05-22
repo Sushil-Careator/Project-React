@@ -134,6 +134,8 @@ class Profile extends React.Component<Props, State> {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then(() => {
+                    // e.target.reset();
+
                     this.getData();
                 })
         );
