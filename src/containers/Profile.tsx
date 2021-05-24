@@ -1,12 +1,17 @@
 import axios from "axios";
 import React from "react";
+import { connect } from "react-redux";
 import { Redirect, RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import ProfileUpload from "../components/ProfileUpload";
 import Row from "../components/Row";
 import StorageService from "../services/StorageService";
 import UserService from "../services/UserService";
-type Props = { uploadClick: () => void } & RouteComponentProps;
+import { StoreType } from "../types";
+type Props = {
+    uploadClick: () => void;
+    selectedCurrency: any;
+} & RouteComponentProps;
 type State = {
     orderAddress: any;
     line1: string;
@@ -256,6 +261,10 @@ class Profile extends React.Component<Props, State> {
                                                         <p>
                                                             <b>Price Per Qty</b>
                                                         </p>
+                                                        {
+                                                            this.props
+                                                                .selectedCurrency
+                                                        }
                                                         {data.productSalePrice}
                                                     </td>
                                                     <td className="full-width col-2">
@@ -270,6 +279,10 @@ class Profile extends React.Component<Props, State> {
                                                         <p>
                                                             <b>Total Amount</b>
                                                         </p>
+                                                        {
+                                                            this.props
+                                                                .selectedCurrency
+                                                        }
                                                         {data.productSalePrice *
                                                             data.productQty}
                                                     </td>
@@ -426,4 +439,10 @@ class Profile extends React.Component<Props, State> {
         );
     }
 }
-export default Profile;
+
+const mapStoreToProps = (store: StoreType) => {
+    return {
+        selectedCurrency: store.currency,
+    };
+};
+export default connect(mapStoreToProps, null)(Profile);
